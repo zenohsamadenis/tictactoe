@@ -1,34 +1,35 @@
 import numpy as np
 
 
+class _Cell:
+    __players = ["x", "o", ""]
+
+    def __init__(self):
+        self.used = False
+        self.owner = self.__players[2]
+
+    def play(self, owner):
+        self.used = True
+        self.owner = owner
+
+
 # enum has to added
 class Game:
-    class _Cell:
-        players = ["x", "o", ""]
-
-        def __init__(self):
-            self.used = False
-            self.owner = self.players[3]
-
-        def play(self, owner):
-            try:
-                if type(owner) != str:
-                    raise TypeError("input was not a string. Try again!")
-                if owner not in self.players:
-                    raise ValueError(owner + "is not a player!")
-
-            except TypeError:
-                print(TypeError)
-            except ValueError:
-                print(ValueError)
-
-            else:
-                self.used = True
-                self.owner = owner
-
     def __init__(self, size=3):
-        self.Board = np.zeros((size, size)) * self._Cell()
+        self.Board = np.zeros((size, size)) * _Cell()
 
-    def turn(self, row, column):
-        # not implemented yet
-        pass
+    def turn(self, row, column, owner):
+        try:
+            if type(row) != int or type(column) != int:
+                raise TypeError("")
+            if self.Board(row, column).used:
+                self.Board(row, column).play(owner)
+            raise KeyError("Feld ist schon benutzt")
+        except KeyError as e:
+            print(e)
+
+
+print("want to play a new game?")
+
+new_game = Game()
+
