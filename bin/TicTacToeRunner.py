@@ -93,7 +93,7 @@ class Game:
 
         game_over = True
         for num in range(3):
-            if not self.Board[num, -num].is_owner(player):
+            if not self.Board[num, 2-num].is_owner(player):
                 game_over = False
         if game_over:
             return True
