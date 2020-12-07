@@ -1,5 +1,26 @@
 import numpy as np
 import os
+from sys import platform
+
+
+def clear():
+    if platform == "linux" or platform == "linux2" or platform == "darwin":
+        os.system("clear")
+    elif platform == "win32":
+        os.system("cls")
+
+
+def return_input(allowed_values, game, message=""):
+    while True:
+        print(message)
+        i = input()
+        for a in allowed_values:
+            if i.upper == a.upper:
+                return i
+        clear()
+        print("bad input, try again")
+        game.print()
+
 
 
 class Player:
@@ -29,7 +50,7 @@ class Cell:
             p = " " + self.owner.sign + " "
         else:
             p = "   "
-        print(p, end="")
+        print("|" + p, end="")
 
 
 class Game:
@@ -43,21 +64,8 @@ class Game:
             return False
         else:
             self.Board[row, column].play(player)
-            print("well done")
+            print("good choice")
             return True
-
-    def legal_input(self, player):
-        allowed = ["1", "2", "3"]
-        self.print()
-        print()
-        row = input(str(player.player_name) + ", select a row:")
-        column = input(str(player.player_name) + ", select a column:")
-
-        if row not in allowed or column not in allowed:
-            print("Input is Wrong")
-            return -1, -1
-        else:
-            return int(row)-1, int(column)-1
 
     def check(self, player):
         for row in range(3):
@@ -90,32 +98,28 @@ class Game:
         if game_over:
             return True
 
-
     def print(self):
         print("- - - - - - -")
         for i in range(3):
             for j in range(3):
-                print("|", end="")
                 self.Board[i, j].print()
             print("|")
             print("_ _ _ _ _ _ _")
 
 
-os.system("clear")
-
-new_game = Game()
+clear()
 name_x = input("player1, type in your Name")
 name_o = input("player2, type in your Name")
-
-player_x = Player(player_name=name_x, sign="x")
-player_o = Player(player_name=name_o, sign="o")
-
-end_of_game = False
-turn_player = player_o
 # game_cont = True
 
 while True:
+    clear()
     print("welcome to TicTacToe!")
+    new_game = Game()
+    player_x = Player(player_name=name_x, sign="x")
+    player_o = Player(player_name=name_o, sign="o")
+    end_of_game = False
+    turn_player = player_o
     while not end_of_game:
 
         if turn_player == player_x:
@@ -125,26 +129,17 @@ while True:
 
         correct_input = False
         while not correct_input:
-            row, column = new_game.legal_input(turn_player)
-            os.system("clear")
-            if row != -1:
-                correct_input = new_game.turn(row, column, turn_player)
-            else:
-                print(str(turn_player.player_name) + ", try again")
+            new_game.print()
+            allowed = ["1", "2", "3"]
+            row = int(return_input(allowed, new_game, str(turn_player.player_name) + ", select a row:")) - 1
+            column = int(return_input(allowed, new_game, str(turn_player.player_name) + ", select a column:")) - 1
+            clear()
+            correct_input = new_game.turn(row, column, turn_player)
         end_of_game = new_game.check(turn_player)
-
+    new_game.print()
     print("congratulation, " + str(turn_player.player_name) + " you have won the game.")
-    correct_input = False
-    selection = None
-    while not correct_input:
-        selection = input("want to play a new game? (y|n)")
-        if selection.upper() == "Y" or selection.upper() == "N":
-            correct_input = True
+    allowed = ["y", "n"]
+    selection = return_input(["y", "n"], new_game, "want to play a new game? (y|n)")
     if selection.upper() == "N":
+        print("No :( Im sad now!")
         break
-    else:
-        new_game = Game()
-        player_x = Player(player_name=name_x, sign="x")
-        player_o = Player(player_name=name_o, sign="o")
-        end_of_game = False
-        turn_player = player_x
