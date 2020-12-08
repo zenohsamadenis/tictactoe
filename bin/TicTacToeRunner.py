@@ -1,4 +1,3 @@
-import numpy as np
 import os
 from sys import platform
 
@@ -20,7 +19,6 @@ def return_input(allowed_values, game, message=""):
         clear()
         print("bad input, try again")
         game.print()
-
 
 
 class Player:
@@ -55,15 +53,15 @@ class Cell:
 
 class Game:
     def __init__(self, size=3):
-        self.Board = np.array([[Cell() for a in range(size)] for b in range(size)])
+        self.Board = [[Cell() for _ in range(size)] for _ in range(size)]
         self.size = size
 
     def turn(self, row, column, player):
-        if self.Board[row, column].has_owner():
+        if self.Board[row][column].has_owner():
             print("This field is used")
             return False
         else:
-            self.Board[row, column].play(player)
+            self.Board[row][column].play(player)
             print("good choice")
             return True
 
@@ -71,7 +69,7 @@ class Game:
         for row in range(3):
             game_over = True
             for column in range(3):
-                if not self.Board[row, column].is_owner(player):
+                if not self.Board[row][column].is_owner(player):
                     game_over = False
             if game_over:
                 return True
@@ -79,21 +77,21 @@ class Game:
         for column in range(3):
             game_over = True
             for row in range(3):
-                if not self.Board[row, column].is_owner(player):
+                if not self.Board[row][column].is_owner(player):
                     game_over = False
             if game_over:
                 return True
 
         game_over = True
         for num in range(3):
-            if not self.Board[num, num].is_owner(player):
+            if not self.Board[num][num].is_owner(player):
                 game_over = False
         if game_over:
             return True
 
         game_over = True
         for num in range(3):
-            if not self.Board[num, 2-num].is_owner(player):
+            if not self.Board[num][2-num].is_owner(player):
                 game_over = False
         if game_over:
             return True
@@ -102,7 +100,7 @@ class Game:
         print("- - - - - - -")
         for i in range(3):
             for j in range(3):
-                self.Board[i, j].print()
+                self.Board[i][j].print()
             print("|")
             print("_ _ _ _ _ _ _")
 
@@ -131,10 +129,10 @@ while True:
         while not correct_input:
             new_game.print()
             allowed = ["1", "2", "3"]
-            row = int(return_input(allowed, new_game, str(turn_player.player_name) + ", select a row:")) - 1
-            column = int(return_input(allowed, new_game, str(turn_player.player_name) + ", select a column:")) - 1
+            turn_row = int(return_input(allowed, new_game, str(turn_player.player_name) + ", select a row:")) - 1
+            turn_column = int(return_input(allowed, new_game, str(turn_player.player_name) + ", select a column:")) - 1
             clear()
-            correct_input = new_game.turn(row, column, turn_player)
+            correct_input = new_game.turn(turn_row, turn_column, turn_player)
         end_of_game = new_game.check(turn_player)
     new_game.print()
     print("congratulation, " + str(turn_player.player_name) + " you have won the game.")
